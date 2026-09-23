@@ -1,0 +1,78 @@
+name: v1.1 Proposal
+description: Propose a change to the Raknor Agent Governance Standard for v1.1
+title: "[v1.1] "
+labels: ["v1.1-proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose a change to the v1.0 standard for consideration in v1.1.
+        See [CONTRIBUTING.md](../../blob/main/CONTRIBUTING.md) for the full process.
+
+  - type: dropdown
+    id: section
+    attributes:
+      label: Section affected
+      description: Which section of the v1.0 standard does this proposal target?
+      options:
+        - "1 -- Scope and Applicability"
+        - "2 -- Normative Language"
+        - "3 -- Certification Thresholds"
+        - "4 -- Mandatory Failure Conditions"
+        - "5 -- Domain 1: Authority Governance"
+        - "6 -- Domain 2: Observability"
+        - "7 -- Domain 3: Interoperability"
+        - "8 -- Domain 4: Safety & Reliability"
+        - "9 -- Domain 5: Adversarial Resilience"
+        - "10 -- Certification Lifecycle"
+        - "11 -- Assessment Methodology"
+        - "12 -- Framework Alignment"
+        - "13 -- Version History"
+        - "New section or cross-cutting"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-text
+    attributes:
+      label: Current text
+      description: Quote the relevant text from v1.0 that your proposal changes or extends. For new additions, write "N/A -- new content."
+      placeholder: Paste the current standard text here
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-change
+    attributes:
+      label: Proposed change
+      description: What should the text say instead, or what should be added?
+      placeholder: State your proposed change clearly
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: Why is this change needed? What problem does it solve? Include implementation experience, incident evidence, or specification references where available.
+      placeholder: Explain why this change improves the standard
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting evidence (optional)
+      description: Links to implementations, incident reports, related standards, or other evidence that supports the proposal.
+      placeholder: URLs, references, or descriptions of supporting evidence
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: disclosure
+    attributes:
+      label: Disclosure
+      description: Transparency about interests
+      options:
+        - label: I have disclosed any relevant affiliations or commercial interests in the rationale above
+          required: true
