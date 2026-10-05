@@ -18,6 +18,10 @@ To participate, [open an issue using the v1.1 Proposal template](https://github.
 
 See the [comment-period announcement](https://github.com/raknor-ai/agent-governance-standard/issues/1), [open proposals](https://github.com/raknor-ai/agent-governance-standard/issues?q=is%3Aissue%20is%3Aopen%20label%3Av1.1-proposal), and [CONTRIBUTING.md](CONTRIBUTING.md) for the process.
 
+## Contribution progress
+
+See [PROGRESS.md](PROGRESS.md) for our AgentBaseline filings, proposals in this repository, external responses, and outstanding follow-up work.
+
 ## About
 
 Operationalized agent-governance criteria with adversarial testing scenarios. 26 controls across 5 domains. Compliance is assessed through adversarial testing against live systems and verified through cryptographic evidence.
