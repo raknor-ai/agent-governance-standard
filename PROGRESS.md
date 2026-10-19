@@ -54,9 +54,9 @@ The concrete source artifacts are available: [signed fixtures and checker](https
 
 ## Crosswalks
 
-Two crosswalks have been submitted as PRs to the AgentBaseline repository on October 18, per their CONTRIBUTING.md request for external crosswalk contributions:
+Two crosswalks are ready on branches of our AgentBaseline fork, following AgentBaseline's CONTRIBUTING.md request for external crosswalks. **Neither is a PR yet.** AgentBaseline limits PR creation to collaborators, and other contributors' crosswalks are blocked the same way (see [#26](https://github.com/agentbaseline/agentbaseline/issues/26)). On October 18, both branches merged cleanly against upstream main `d842a1b`, and every control ID they map exists in `controls.yaml`. Next step: ask a maintainer to open the PRs.
 
-1. **Raknor standard-to-baseline** (`crosswalks/raknor-standard.yaml`, 428 lines): maps all 26 Raknor controls (SC-AG-01–06, SC-OB-01–05, SC-IO-01–04, SC-SR-01–06, SC-AD-01–05) and 7 mandatory failure conditions to the 35 baseline controls, with strength ratings and gap annotations. Includes reverse gaps identifying 15 baseline controls with no Raknor equivalent — primarily in Discover and Respond outcomes. Filed from `JamesFordAI:crosswalk/raknor-standard`.
+1. **Raknor standard-to-baseline** (`crosswalks/raknor-standard.yaml`, 426 lines, commit `41f5bf8`): maps all 26 Raknor controls (SC-AG-01–06, SC-OB-01–05, SC-IO-01–04, SC-SR-01–06, SC-AD-01–05) and 7 mandatory failure conditions to the 35 baseline controls, with strength ratings and gap annotations. Includes reverse gaps identifying 15 baseline controls with no Raknor equivalent — primarily in Discover and Respond outcomes. Filed from `JamesFordAI:crosswalk/raknor-standard`.
 
 2. **Equilateral scorecard-to-baseline** (`crosswalks/equilateral-scorecard.yaml`, 353 lines): companion submission mapping all 25 scorecard criteria to the 35 baseline controls. Filed from `JamesFordAI:crosswalk/equilateral-scorecard`. [Scorecard progress](https://github.com/Equilateral-AI/agent-governance-scorecard/blob/main/PROGRESS.md).
 
@@ -75,7 +75,7 @@ These reviews establish handling priorities, not acceptance of proposed SHALL cl
 
 1. Draft the field set and control crosswalk against the two concrete record shapes, with separate integrity, claim-verifiability, coverage, observation and timing properties.
 2. Independently rerun babyblueviper1's OBS-06 vectors (`check.py`, 6/6) and record results. The tolerance vector and the modified-record vector load-bear on evidence integrity.
-3. ~~Crosswalk Raknor controls to baseline.~~ Complete: Raknor-to-baseline and Equilateral-to-baseline crosswalks both filed October 18.
+3. Crosswalk Raknor controls to baseline: drafted October 18; waiting for a maintainer to open the PR (see Crosswalks).
 4. Prepare positive/negative timing and evidence vectors, preserving the distinction between contributor-reported results and independently rerun results.
 5. Prepare fail-closed and configured-budget conformance vectors for #3 and #4; obtain missing source links and resolve scope/identifier errors.
 6. Evaluate the five new Equilateral scorecard proposals ([#5](https://github.com/Equilateral-AI/agent-governance-scorecard/issues/5), [#6](https://github.com/Equilateral-AI/agent-governance-scorecard/issues/6), [#7](https://github.com/Equilateral-AI/agent-governance-scorecard/issues/7), [#8](https://github.com/Equilateral-AI/agent-governance-scorecard/issues/8), [#9](https://github.com/Equilateral-AI/agent-governance-scorecard/issues/9)) for alignment or divergence with Raknor controls; note in dispositions. #8 (adversarial testing) aligns with SC-AD domain; #9 (output assurance) is a gap in both frameworks.
