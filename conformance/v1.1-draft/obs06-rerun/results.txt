@@ -1,0 +1,33 @@
+# OBS-06 commitment_anchor rerun — upstream a2949a73215d044fd587a3b7d85f16771d69e31b, run 2026-10-21T04:45Z
+
+## input hashes (sha256)
+c2b19fa490007b08ff1eadff226c2d1eb4693b2eeb7afe4590ee29ab1f40e085  check.py
+8cf8fe4f5921dd2c0a0346a22eea7432297cf50a925e3d16b3b08754163dcfc0  vectors.json
+f9825f58e195c91b7753d396c4b2d3b11639edf47f1f812830d0664710179d87  38.ots
+
+## upstream check.py
+ok   anchor-before-outcome                    CONFORMING                                   established=True
+ok   anchor-after-outcome-declared            CONFORMING                                   established=False
+ok   control-claims-precedence-after-outcome  NONCONFORMING_UNSUPPORTED_PRECEDENCE_CLAIM   established=False
+ok   control-late-anchor-silent               NONCONFORMING_UNDECLARED_LIMITATION          established=False
+ok   control-outcome-inside-tolerance         NONCONFORMING_UNSUPPORTED_PRECEDENCE_CLAIM   established=False
+ok   control-anchor-does-not-cover-record     ANCHOR_DOES_NOT_COVER_RECORD                 established=False
+6/6 agree
+
+## indep_check.py (+ mutation)
+drop=none         6/6 agree  failing: -
+drop=tolerance    5/6 agree  failing: control-outcome-inside-tolerance
+drop=digest       5/6 agree  failing: control-anchor-does-not-cover-record
+drop=undeclared   5/6 agree  failing: control-late-anchor-silent
+drop=unsupported  4/6 agree  failing: control-claims-precedence-after-outcome, control-outcome-inside-tolerance
+
+## verify_ots.py
+proof file digest : a42205d7e39c684f0aa43f80fe7ea1aa8e180df93ff46e82b5bff95b70c663e9
+matches record    : True
+other attestation : PendingAttestation('https://alice.btc.calendar.opentimestamps.org')
+bitcoin attestation: height 955810, proof merkle root 0b7c456e983d3b6622caa3c93ab6e783607eddfc2a6ffbaa8183026826398d0e
+  mempool.space      block 0000000000000000… root match=True header_time=1782654639 mediantime=1782651305
+  blockstream.info   block 0000000000000000… root match=True header_time=1782654639 mediantime=1782651305
+other attestation : PendingAttestation('https://finney.calendar.eternitywall.com')
+other attestation : PendingAttestation('https://bob.btc.calendar.opentimestamps.org')
+other attestation : PendingAttestation('https://btc.calendar.catallaxy.com')
