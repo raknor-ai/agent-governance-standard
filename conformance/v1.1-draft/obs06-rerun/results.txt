@@ -31,3 +31,33 @@ bitcoin attestation: height 955810, proof merkle root 0b7c456e983d3b6622caa3c93a
 other attestation : PendingAttestation('https://finney.calendar.eternitywall.com')
 other attestation : PendingAttestation('https://bob.btc.calendar.opentimestamps.org')
 other attestation : PendingAttestation('https://btc.calendar.catallaxy.com')
+
+
+# Rerun 2 — upstream e12d3e9 (21 vectors), checker v2 written from the e12d3e9 README, run 2026-10-25T19:57Z
+
+## input hashes (sha256)
+02ff271cc99d2e28c1c4d4240d640a191f181b16d5ddaa5bb428d65f664baf6a  check.py
+efe25f4382b439aa79e5bc140a3b9852ae6ff54fe967d3b71baadfb82d89ad0a  vectors.json
+f9825f58e195c91b7753d396c4b2d3b11639edf47f1f812830d0664710179d87  38.ots
+d996a20ca672d884d0d59baada7d4601348b5594f33b283aae26716717b4fde0  README.md
+
+## upstream check.py
+21/21 agree
+
+## indep_check.py v2 (+ mutation)
+drop=none         21/21 agree  failing: -
+drop=tolerance    19/21 agree  failing: control-outcome-inside-tolerance, control-honest-header-same-outcome
+drop=digest       18/21 agree  failing: control-anchor-does-not-cover-record, control-escaping-json-default-digest, default-unknown-digest-rule
+drop=escaping     19/21 agree  failing: escaping-nip01-non-ascii-and-c0, control-escaping-json-default-digest
+drop=undeclared   20/21 agree  failing: control-late-anchor-silent
+drop=unsupported  14/21 agree  failing: control-claims-precedence-after-outcome, control-outcome-inside-tolerance, control-later-median-ceiling-after-outcome, control-later-median-ceiling-missing, control-height-same-block, control-honest-header-same-outcome, contradiction-not-established-asserts-and-disclaims
+
+## block-time figures (mempool.space headers)
+header 955810             1782654639
+median 955799-955809       1782651080  gap 3559   <- consensus MTP rule
+median 955800-955810       1782651305  gap 3334
+explorer mediantime(955810) 1782651305  gap 3334  equals median 955800-955810: True
+median 955811-955821       1782657732  = T + 3093   (their later_median ceiling claim: 1782657732, T+3093)
+955811 header earlier than 955810: True 1782654361
+
+Correction: rerun 1 reported a 3,334 s median-time-past gap. That figure is the explorer's mediantime field for 955810, which includes block 955810 itself. The consensus rule uses the previous 11 blocks (955799-955809): 3,559 s.

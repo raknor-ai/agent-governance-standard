@@ -29,7 +29,7 @@ The reference implementations are models of the cited failure mechanisms. They a
 
 ## OBS-06 rerun
 
-`obs06-rerun/` reruns [babyblueviper1's `commitment_anchor` vectors](https://github.com/babyblueviper1/preaction-governance-conformance/tree/a2949a7/examples/commitment-anchor-obs06) at commit `a2949a7`:
+`obs06-rerun/` reruns [babyblueviper1's `commitment_anchor` vectors](https://github.com/babyblueviper1/preaction-governance-conformance/tree/e12d3e9/examples/commitment-anchor-obs06). Rerun 1 (2026-10-21) used commit `a2949a7` (6 vectors). Rerun 2 (2026-10-25) used `e12d3e9` (21 vectors, three `anchor_time_rule` values, NIP-01 escaping), with the checker rewritten from that README. Both are recorded in `results.txt`, along with a correction to rerun 1's median-time-past figure:
 
 - `indep_check.py` is a checker written from the upstream README's rule text, without reference to the upstream `check.py`. `--drop RULE` disables one rule, to test whether each rule is load-bearing.
 - `verify_ots.py` replays the OpenTimestamps proof to its Bitcoin attestation and compares the merkle root with block headers from two public explorers. It uses no local node and doesn't rely on the ledger operator. It requires `pip install opentimestamps`.
@@ -38,7 +38,7 @@ The reference implementations are models of the cited failure mechanisms. They a
 To reproduce:
 
 ```
-git clone https://github.com/babyblueviper1/preaction-governance-conformance && cd preaction-governance-conformance && git checkout a2949a7
+git clone https://github.com/babyblueviper1/preaction-governance-conformance && cd preaction-governance-conformance && git checkout e12d3e9
 cd examples/commitment-anchor-obs06
 python3 <this-dir>/obs06-rerun/indep_check.py vectors.json
 python3 <this-dir>/obs06-rerun/verify_ots.py 38.ots a42205d7e39c684f0aa43f80fe7ea1aa8e180df93ff46e82b5bff95b70c663e9
