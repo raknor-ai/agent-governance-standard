@@ -62,6 +62,8 @@ Two crosswalks are ready on branches of our AgentBaseline fork, following AgentB
 
 Together the two crosswalks give baseline maintainers coverage from both angles — governance evaluation (scorecard) and adversarial certification (Raknor).
 
+On October 25 we [offered maintainers any submission route](https://github.com/agentbaseline/agentbaseline/issues/26#issuecomment-6402473051). **Commitment:** if no preference is stated by 2026-11-01, post each crosswalk file as its own issue, one per framework. Separately, we [offered Raknor's `conformance/v1.1-draft/` as an interim CC0 home](https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-6402474023) for owenshuo's and aigentical-ai's AUT-05 binding vectors (mapped to SC-SR-03), keeping attribution and evidence-scope labels.
+
 ## External proposals and review progress
 
 | Issue | Review completed | Follow-up pending |
