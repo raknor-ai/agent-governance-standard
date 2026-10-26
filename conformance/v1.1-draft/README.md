@@ -11,6 +11,7 @@ Test material for proposals in the v1.1 window, which closes 2026-11-30. **Nothi
 | [`fail-closed/vectors.json`](fail-closed/vectors.json) | [#3 SC-AG-07 Fail-closed policy evaluation](https://github.com/raknor-ai/agent-governance-standard/issues/3) | 14 black-box vectors for clauses (a)–(d), including 4 positive controls |
 | [`resource-governance/vectors.json`](resource-governance/vectors.json) | [#4 SC-AG-05 resource limits and declared degradation](https://github.com/raknor-ai/agent-governance-standard/issues/4) | 6 timed vectors for clauses 1–3, including 2 positive controls |
 | [`run.py`](run.py) | #3, #4 | Checks that the vectors tell a conforming reference apart from fail-open variants |
+| [`sc-ob-01-commitment-anchor.md`](sc-ob-01-commitment-anchor.md) | [#2 evidence field set](https://github.com/raknor-ai/agent-governance-standard/issues/2) | Draft SC-OB-01 clause with the placement agreed with the contributor; references pinned to commits |
 | [`obs06-rerun/`](obs06-rerun/) | [#2 evidence field set](https://github.com/raknor-ai/agent-governance-standard/issues/2) | Independent rerun of the contributed `commitment_anchor` vectors |
 
 ## Vector format
