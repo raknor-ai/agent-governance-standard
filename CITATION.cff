@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you cite or build on the Raknor Agent Governance Standard, please cite it as below."
+title: "Raknor Agent Governance Standard"
+version: "1.0"
+# v1.0 text published March 2026; this repository's canonical mirror created 2026-08-19.
+date-released: "2026-08-19"
+authors:
+  - family-names: "Ford"
+    given-names: "James"
+    affiliation: "Raknor (Pareidolia LLC)"
+license: "CC-BY-4.0"
+repository-code: "https://github.com/raknor-ai/agent-governance-standard"
+url: "https://raknor.ai/standard.html"
+abstract: >-
+  Operationalized agent-governance criteria with adversarial testing
+  scenarios: 26 controls across 5 domains (Authority Governance,
+  Observability, Interoperability, Safety & Reliability, Adversarial
+  Resilience). Compliance is assessed through adversarial testing
+  against live systems and verified through cryptographic evidence.
+  v1.0 text SHA-256:
+  01fae0e01d6e7dee4ec90041e1bf89fbd67b956425ee13d565bac4c72595b603
+keywords:
+  - agent governance
+  - ai governance
+  - adversarial testing
+  - certification
+  - governance fidelity
