@@ -16,6 +16,8 @@ The `height` rule (anchor height strictly below outcome height) is preferred whe
 
 **Revision (2026-11-01):** the clause now requires the record to state its `anchor_time_rule`. The vocabulary proves a ceiling only under the rule the record states, so without it an assessor could not check precedence from the clause alone. Raised by @astrogilda on [#2](https://github.com/raknor-ai/agent-governance-standard/issues/2#issuecomment-6445413844).
 
+**Open item:** the pinned vector `default-anchor-time-rule-absent` (at `e12d3e9`) asserts precedence with no stated rule and expects CONFORMING under the vocabulary's default. It conflicts with this revision until the contributor either keeps the default for records predating the field, or re-pins the vector as nonconforming ([#2](https://github.com/raknor-ai/agent-governance-standard/issues/2#issuecomment-6568609446)).
+
 ## Pinned references
 
 | What | Pinned at |
