@@ -12,23 +12,32 @@ ALLOW, DENY = "ALLOW", "DENY"
 
 # ---------- #3 fail-closed policy evaluation ----------
 
-def evaluate_verdict(verdict):
+def evaluate_verdict(verdict, policy=None):
     if isinstance(verdict, dict) and "raise" in verdict:
         raise RuntimeError("evaluator crashed")
     if isinstance(verdict, dict) and verdict.get("timeout"):
         raise TimeoutError("approver timed out")
+    if isinstance(verdict, dict) and "value" in verdict:
+        deadline = (policy or {}).get("approver_deadline_s")
+        if deadline is not None and verdict.get("after_s", 0) > deadline:
+            raise TimeoutError("no verdict by the declared approver deadline")
+        return verdict["value"]
     return verdict
+
+def recognised_entries(allow):
+    # exact action ids (namespace:name) or the single wildcard "*"; other match-all spellings are unrecognised
+    return all(e == "*" or ":" in e for e in allow)
 
 def fc_conforming(policy, action, verdict):
     try:
         if policy.get("load_error") or policy.get("signature_valid") is False:
             return False, "policy_indeterminate"
         allow = policy.get("allowlist")
-        if not allow:
+        if not allow or not recognised_entries(allow):
             return False, "policy_indeterminate"
         if "*" not in allow and action not in allow:
             return False, None
-        v = evaluate_verdict(verdict)
+        v = evaluate_verdict(verdict, policy)
         if v == ALLOW:
             return True, None
         if v == DENY:
@@ -44,7 +53,7 @@ def fc_empty_means_all(policy, action, verdict):  # crewAI #7778 / legacy agent-
         allow = policy.get("allowlist")
         if allow and "*" not in allow and action not in allow:
             return False, None
-        v = evaluate_verdict(verdict)
+        v = evaluate_verdict(verdict, policy)
         return (v == ALLOW, None) if v in (ALLOW, DENY) else (False, "policy_indeterminate")
     except Exception:
         return False, "policy_indeterminate"
@@ -62,7 +71,7 @@ def fc_exception_allows(policy, action, verdict):  # evaluator error swallowed, 
     if "*" not in allow and action not in allow:
         return False, None
     try:
-        v = evaluate_verdict(verdict)
+        v = evaluate_verdict(verdict, policy)
     except Exception:
         return True, None
     return (v == ALLOW, None) if v in (ALLOW, DENY) else (False, "policy_indeterminate")
@@ -70,22 +79,32 @@ def fc_exception_allows(policy, action, verdict):  # evaluator error swallowed, 
 def fc_silent_deny(policy, action, verdict):  # denies correctly, never reports
     return fc_conforming(policy, action, verdict)[0], None
 
+def fc_alt_wildcard(policy, action, verdict):  # "all"/"any" accepted as match-all
+    policy = dict(policy)
+    if policy.get("allowlist"):
+        policy["allowlist"] = ["*" if e in ("all", "any", ".*") else e for e in policy["allowlist"]]
+    return fc_conforming(policy, action, verdict)
+
 def run_fail_closed():
     vs = json.load(open(os.path.join(HERE, "fail-closed", "vectors.json")))["vectors"]
     impls = {"conforming": fc_conforming, "empty-means-all": fc_empty_means_all,
              "execute-unless-DENY": fc_execute_unless_deny, "exception-allows": fc_exception_allows,
-             "silent-deny": fc_silent_deny}
+             "silent-deny": fc_silent_deny, "alt-wildcard-spelling": fc_alt_wildcard}
     return report("#3 fail-closed", vs, impls,
                   lambda f, v: dict(zip(("executed", "event"), f(v["policy"], v["action"], v["verdict"]))) == v["expect"])
 
 # ---------- #4 resource governance ----------
 
 class Budget:
-    def __init__(self, limit, fallback, ttl=None, lag=None, falsy_zero=False, reseed=False, silent=False):
+    def __init__(self, limit, fallback, ttl=None, lag=None, falsy_zero=False, reseed=False, silent=False,
+                 cost_known="before", max_overshoot=None, window_s=None, unbounded_overshoot=False):
         self.limit, self.fallback = limit, fallback
         self.ttl, self.lag = ttl, lag
         self.falsy_zero, self.reseed, self.silent = falsy_zero, reseed, silent
+        self.cost_known, self.max_overshoot, self.window_s = cost_known, max_overshoot, window_s
+        self.unbounded_overshoot = unbounded_overshoot
         self.spent, self.exceeded, self.last_touch, self.writes = 0, False, 0, []
+        self.window_start = 0
 
     def _current_spend(self, t):
         if self.reseed and self.ttl is not None and t - self.last_touch > self.ttl:
@@ -94,9 +113,22 @@ class Budget:
             self.exceeded = False
         return self.spent
 
-    def request(self, t, cost):
+    def request(self, t, cost, max_cost=None):
+        if self.window_s is not None and t >= self.window_start + self.window_s:
+            # a scheduled window end is part of the configured limit: an explicit reset
+            self.reset(t)
+            self.window_start = t - (t % self.window_s)
         spent = self._current_spend(t)
-        over = (self.exceeded or spent + cost > self.limit)
+        if self.cost_known == "after":
+            # cost is known only once the call completes; admit a crossing request only within the declared bound
+            bound = max_cost if max_cost is not None else cost
+            if self.unbounded_overshoot:
+                over = self.exceeded or spent >= self.limit
+            else:
+                over = (self.exceeded or spent >= self.limit or self.max_overshoot is None and spent + bound > self.limit
+                        or self.max_overshoot is not None and spent + bound - self.limit > self.max_overshoot)
+        else:
+            over = (self.exceeded or spent + cost > self.limit)
         if self.falsy_zero and not self.limit:
             over = False
         self.last_touch = t
@@ -120,7 +152,7 @@ def budget_ok(make, v):
         if s.get("reset"):
             b.reset(s["t"])
             continue
-        got, ev, marker = b.request(s["t"], s["cost"])
+        got, ev, marker = b.request(s["t"], s["cost"], s.get("max_cost"))
         if got != s["expect"]:
             return False
         if "expect_event" in s and (ev != s["expect_event"] or marker != s.get("expect_caller_marker")):
@@ -130,9 +162,11 @@ def budget_ok(make, v):
 def run_budget():
     vs = json.load(open(os.path.join(HERE, "resource-governance", "vectors.json")))["vectors"]
     def mk(**kw):
-        return lambda v: Budget(v["limit"], v["fallback"], v.get("counter_ttl_s"), v.get("persist_lag_s"), **kw)
+        return lambda v: Budget(v["limit"], v["fallback"], v.get("counter_ttl_s"), v.get("persist_lag_s"),
+                                cost_known=v.get("cost_known", "before"), max_overshoot=v.get("max_overshoot"),
+                                window_s=v.get("window_s"), **kw)
     impls = {"conforming": mk(), "falsy-zero": mk(falsy_zero=True), "ttl-reseed": mk(reseed=True),
-             "silent-fallback": mk(silent=True)}
+             "silent-fallback": mk(silent=True), "unbounded-overshoot": mk(unbounded_overshoot=True)}
     return report("#4 resource governance", vs, impls, lambda make, v: budget_ok(make, v))
 
 # ---------- shared ----------
