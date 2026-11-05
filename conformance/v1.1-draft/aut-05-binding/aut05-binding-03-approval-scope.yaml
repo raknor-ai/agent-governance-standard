@@ -1,0 +1,47 @@
+# Transcribed from agentbaseline/agentbaseline#28. Wording is quoted from the source comments;
+# nothing here is new. Fields the source does not state are null, marked "not stated in source".
+id: aut05-binding-03-approval-scope
+title: "Approval scope: an approval spent on a different interface"
+authors: [aigentical-ai]
+source:
+  case: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-5818941784
+  finding: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-5625641344
+  consent: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-6646060809
+license: CC0-1.0
+maps_to:
+  agent_baseline: AUT-05
+  raknor: SC-SR-03
+binding_fields:
+  # Dimension named by owenshuo (issuecomment-5707104099): "Approval scope: bind the issuing surface
+  # and the explicitly permitted redemption audience/action domain."
+  - issuing_surface
+inputs: "Inputs are synthetic."
+preconditions: "Approved: a human approves a tool action on the tool-call interface."
+stimulus: "Mutation after approval: the same agent presents that approval on the model-inference interface, with an ordinary chat request. Identity, signature, status and expiry are all valid. Only the interface is wrong."
+boundary_exercised: "the inference interface's approval check, before anything is forwarded."
+expected: "refused (403), reason \"approval issued on a different interface\", one DENY record."
+side_effects:
+  definition: "\"Side effects\" means two counts: requests forwarded to the model provider, and whether the approval was consumed."
+  expected: "0 forwarded. Approval not consumed, so it still works for the tool action it was granted for."
+positive_control: "an approval issued on the inference interface for that exact request, redeemed there unchanged. Forwarded once, approval consumed."
+protection_removal_check: "With the interface check disabled, (3) is forwarded."
+evidence_scope: application_boundary
+evidence_scope_source: "Evidence scope: both are application-boundary runs. They went through our real request handling, approval check and audit record, driven by an in-process test client. The approval store, the credential store and the model provider were substituted. Neither is a deployed-network run or a reference-target run."
+observed:
+  - by: aigentical-ai
+    surface: "running instance (original finding); regression test at the application boundary"
+    result: "The original findings were reproduced against a running instance. The cases below are the regression tests we now run for them."
+    date: 2026-09-24
+  - by: owenshuo
+    source: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-6309618292
+    surface: "synthetic reference target"
+    evidence_scope: reference_target
+    result: "In the synthetic reference target, both cases reject the invalid request before forwarding and preserve the approval for a legitimate retry. The unchanged positive cases succeed, and replay produces no additional forwarding. Removing the surface check, or excluding the inspection-control field from the binding, allows the invalid request through and causes the negative oracle to fail."
+    date: 2026-10-21
+  - by: owenshuo
+    source: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-6309618292
+    surface: "the actual pinned AssureOps application, through an in-process API test client"
+    evidence_scope: not_applicable
+    result: "We therefore classify the cross-surface case as not applicable to that pinned surface"
+    reason: "that application exposes neither a model-inference approval-redemption interface nor an output scanner."
+    date: 2026-10-21

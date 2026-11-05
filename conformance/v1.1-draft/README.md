@@ -12,6 +12,7 @@ Test material for proposals in the v1.1 window, which closes 2026-11-30. **Nothi
 | [`resource-governance/vectors.json`](resource-governance/vectors.json) | [#4 SC-AG-05 resource limits and declared degradation](https://github.com/raknor-ai/agent-governance-standard/issues/4) | 9 timed vectors for clauses 1–3, including 3 positive controls |
 | [`run.py`](run.py) | #3, #4 | Checks that the vectors tell a conforming reference apart from fail-open variants |
 | [`sc-ob-01-commitment-anchor.md`](sc-ob-01-commitment-anchor.md) | [#2 evidence field set](https://github.com/raknor-ai/agent-governance-standard/issues/2) | Draft SC-OB-01 clause with the placement agreed with the contributor; references pinned to commits |
+| [`aut-05-binding/`](aut-05-binding/) | Agent Baseline [AUT-05 test method (#28)](https://github.com/agentbaseline/agentbaseline/issues/28); maps to SC-SR-03 | Two approval-binding negative cases by aigentical-ai, with owenshuo's verification notes kept separate (CC0) |
 | [`obs06-rerun/`](obs06-rerun/) | [#2 evidence field set](https://github.com/raknor-ai/agent-governance-standard/issues/2) | Independent rerun of the contributed `commitment_anchor` vectors |
 
 ## Vector format

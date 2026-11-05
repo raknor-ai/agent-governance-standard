@@ -1,0 +1,48 @@
+# Transcribed from agentbaseline/agentbaseline#28. Wording is quoted from the source comments;
+# nothing here is new. Fields the source does not state are null, marked "not stated in source".
+id: aut05-binding-04-enforcement-context
+title: "Enforcement context: one added field weakens inspection"
+authors: [aigentical-ai]
+source:
+  case: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-5818941784
+  finding: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-5625641344
+  consent: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-6646060809
+license: CC0-1.0
+maps_to:
+  agent_baseline: AUT-05
+  raknor: SC-SR-03
+binding_fields:
+  # aigentical-ai: "We bind the whole request, minus a small fixed set of fields the platform sets itself."
+  # owenshuo (issuecomment-6309411558): "binding the complete effective request can detect the added
+  # inspection-control field without treating inspection policy as a separate binding value."
+  - complete_effective_request
+inputs: "Inputs are synthetic."
+preconditions: "Approved: a human approves a model-inference request."
+stimulus: "Mutation after approval: the same request with one caller-supplied field added. On this platform that field can turn off inspection of the model's response."
+boundary_exercised: "the same approval check, before forwarding and before any response inspection."
+expected: "refused (403), reason \"request differs from the approved request\", one DENY record. The response scanner never runs."
+side_effects:
+  definition: "\"Side effects\" means two counts: requests forwarded to the model provider, and whether the approval was consumed."
+  expected: "0 forwarded. Approval not consumed."
+positive_control: "the exact approved request, redeemed once. Forwarded once, inspection on, approval consumed."
+protection_removal_check: "With the (4) field excluded from the binding, (4) is forwarded with inspection off and the approval consumed."
+evidence_scope: application_boundary
+evidence_scope_source: "Evidence scope: both are application-boundary runs. They went through our real request handling, approval check and audit record, driven by an in-process test client. The approval store, the credential store and the model provider were substituted. Neither is a deployed-network run or a reference-target run."
+observed:
+  - by: aigentical-ai
+    surface: "running instance (original finding); regression test at the application boundary"
+    result: "The original findings were reproduced against a running instance. The cases below are the regression tests we now run for them."
+    date: 2026-09-24
+  - by: owenshuo
+    source: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-6309618292
+    surface: "synthetic reference target"
+    evidence_scope: reference_target
+    result: "In the synthetic reference target, both cases reject the invalid request before forwarding and preserve the approval for a legitimate retry. The unchanged positive cases succeed, and replay produces no additional forwarding. Removing the surface check, or excluding the inspection-control field from the binding, allows the invalid request through and causes the negative oracle to fail."
+    date: 2026-10-21
+  - by: owenshuo
+    source: https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-6309618292
+    surface: "the actual pinned AssureOps application, through an in-process API test client"
+    evidence_scope: partial_analogue
+    result: "the inspection case as a partial analogue only. An added execution-request field is rejected with HTTP 422, with no execution side effects. The original approval remains usable, and an unchanged retry succeeds without duplicate execution on replay."
+    audit_gap: "schema-level rejection does not append an application DENY record, so the rejection-audit criterion is not demonstrated there."
+    date: 2026-10-21
