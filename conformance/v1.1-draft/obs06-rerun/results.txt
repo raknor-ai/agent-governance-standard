@@ -61,3 +61,21 @@ median 955811-955821       1782657732  = T + 3093   (their later_median ceiling 
 955811 header earlier than 955810: True 1782654361
 
 Correction: rerun 1 reported a 3,334 s median-time-past gap. That figure is the explorer's mediantime field for 955810, which includes block 955810 itself. The consensus rule uses the previous 11 blocks (955799-955809): 3,559 s.
+
+
+# Rerun 3 — upstream b684d07 (23 vectors; absent anchor_time_rule establishes nothing), checker v3, run 2026-11-05T02:54Z
+
+## input hashes (sha256)
+74aaf3569f8b1879ed243310b8ede4111975158f622cbccc444c529b63c2d751  check.py
+ec8fb580de45803c3ec50ea5e4044208f16e0549008ad850e39bd4c818158848  vectors.json
+
+## upstream check.py
+23/23 agree
+
+## indep_check.py v3 (+ mutation)
+drop=none         23/23 agree  failing: -
+drop=tolerance    21/23 agree  failing: control-outcome-inside-tolerance, control-honest-header-same-outcome
+drop=digest       20/23 agree  failing: control-anchor-does-not-cover-record, control-escaping-json-default-digest, default-unknown-digest-rule
+drop=escaping     21/23 agree  failing: escaping-nip01-non-ascii-and-c0, control-escaping-json-default-digest
+drop=undeclared   21/23 agree  failing: control-late-anchor-silent, default-anchor-time-rule-absent-silent
+drop=unsupported  15/23 agree  failing: control-claims-precedence-after-outcome, control-outcome-inside-tolerance, control-later-median-ceiling-after-outcome, control-later-median-ceiling-missing, control-height-same-block, control-honest-header-same-outcome, default-anchor-time-rule-absent, contradiction-not-established-asserts-and-disclaims

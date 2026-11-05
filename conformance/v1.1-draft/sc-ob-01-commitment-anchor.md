@@ -16,16 +16,16 @@ The `height` rule (anchor height strictly below outcome height) is preferred whe
 
 **Revision (2026-11-01):** the clause now requires the record to state its `anchor_time_rule`. The vocabulary proves a ceiling only under the rule the record states, so without it an assessor could not check precedence from the clause alone. Raised by @astrogilda on [#2](https://github.com/raknor-ai/agent-governance-standard/issues/2#issuecomment-6445413844).
 
-**Open item:** the pinned vector `default-anchor-time-rule-absent` (at `e12d3e9`) asserts precedence with no stated rule and expects CONFORMING under the vocabulary's default. It conflicts with this revision until the contributor either keeps the default for records predating the field, or re-pins the vector as nonconforming ([#2](https://github.com/raknor-ai/agent-governance-standard/issues/2#issuecomment-6568609446)).
+**Resolved (2026-11-02):** the contributor chose to require the rule outright. At [`b684d07`](https://github.com/babyblueviper1/preaction-governance-conformance/tree/b684d07cc8dd30f7c1bd11dd60f6e1c976d6ae6f/examples/commitment-anchor-obs06), `default-anchor-time-rule-absent` expects NONCONFORMING_UNSUPPORTED_PRECEDENCE_CLAIM, and two vectors cover a no-claim record without a rule (undeclared → NONCONFORMING_UNDECLARED_LIMITATION; declared → CONFORMING, not established). Both match this clause. `e12d3e9` is left in place for the earlier reruns.
 
 ## Pinned references
 
 | What | Pinned at |
 |---|---|
 | Field definition (term `commitment_anchor`, with companion `anchor_time_rule`) | probityai/agent-evidence vocabulary v0.7.0, [`36056a3b` `vocabulary.yaml#L333`](https://github.com/probityai/agent-evidence/blob/36056a3bcb09/packages/vocabulary/vocabulary.yaml#L333), merged in [#59](https://github.com/probityai/agent-evidence/pull/59) |
-| Rule text and conformance vectors (21, CC0) | [`babyblueviper1/preaction-governance-conformance@e12d3e9`](https://github.com/babyblueviper1/preaction-governance-conformance/tree/e12d3e9a7e10/examples/commitment-anchor-obs06) |
+| Rule text and conformance vectors (23, CC0) | [`babyblueviper1/preaction-governance-conformance@b684d07`](https://github.com/babyblueviper1/preaction-governance-conformance/tree/b684d07cc8dd30f7c1bd11dd60f6e1c976d6ae6f/examples/commitment-anchor-obs06) (vectors.json `ec8fb580…8848`, check.py `74aaf356…d751`); superseded pin `e12d3e9` (21) |
 | Vocabulary crosswalk mapping this clause | probityai/agent-evidence [#92](https://github.com/probityai/agent-evidence/pull/92) (merged 2026-10-29) |
-| Independent rerun (21/21, five rules load-bearing) | [`obs06-rerun/`](obs06-rerun/), rerun 2 in `results.txt` |
+| Independent rerun (23/23 at `b684d07`, five rules load-bearing) | [`obs06-rerun/`](obs06-rerun/), rerun 3 in `results.txt` |
 
 References are pinned to commits, not branches, so a later edit upstream can't change what this clause tests.
 

@@ -1,6 +1,6 @@
 """Independent commitment_anchor checker, written from the upstream README rule text, not from check.py.
 
-v2 follows the README at e12d3e9: three anchor_time_rule values, NIP-01 escaping, stated defaults, ordered results.
+v3 follows the README at b684d07 and SC-OB-01 as revised 2026-11-01 (an absent anchor_time_rule establishes nothing); v2 followed e12d3e9: three anchor_time_rule values, NIP-01 escaping, stated defaults, ordered results.
 Usage: python3 indep_check.py vectors.json [--drop RULE]
 RULE in: tolerance, digest, escaping, undeclared, unsupported (mutation test: disable one rule).
 """
@@ -37,7 +37,7 @@ def covers(rec, drop):
 
 def established(rec, drop):
     anc = rec["commitment_anchor"]
-    rule = anc.get("anchor_time_rule", "header_time_plus_tolerance")
+    rule = anc.get("anchor_time_rule")  # SC-OB-01 rev 2026-11-01: no stated rule establishes nothing
     if rule == "height":
         a, o = anc.get("anchor_height"), rec.get("outcome_height")
         return a is not None and o is not None and a < o
