@@ -8,12 +8,16 @@ Test material for proposals in the v1.1 window, which closes 2026-11-30. **Nothi
 
 | Path | Proposal | What it is |
 |---|---|---|
-| [`fail-closed/vectors.json`](fail-closed/vectors.json) | [#3 SC-AG-07 Fail-closed policy evaluation](https://github.com/raknor-ai/agent-governance-standard/issues/3) | 17 black-box vectors for clauses (a)–(d), including 4 positive controls |
+| [`fail-closed/vectors.json`](fail-closed/vectors.json) | [#3 SC-AG-07 Fail-closed policy evaluation](https://github.com/raknor-ai/agent-governance-standard/issues/3) | 19 black-box vectors for clauses (a)–(d), including 4 positive controls; every indeterminate denial also checks the value as received |
 | [`resource-governance/vectors.json`](resource-governance/vectors.json) | [#4 SC-AG-05 resource limits and declared degradation](https://github.com/raknor-ai/agent-governance-standard/issues/4) | 9 timed vectors for clauses 1–3, including 3 positive controls |
 | [`run.py`](run.py) | #3, #4 | Checks that the vectors tell a conforming reference apart from fail-open variants |
 | [`sc-ob-01-commitment-anchor.md`](sc-ob-01-commitment-anchor.md) | [#2 evidence field set](https://github.com/raknor-ai/agent-governance-standard/issues/2) | Draft SC-OB-01 clause with the placement agreed with the contributor; references pinned to commits |
 | [`aut-05-binding/`](aut-05-binding/) | Agent Baseline [AUT-05 test method (#28)](https://github.com/agentbaseline/agentbaseline/issues/28); maps to SC-SR-03 | Two approval-binding negative cases by aigentical-ai, with owenshuo's verification notes kept separate (CC0) |
 | [`obs06-rerun/`](obs06-rerun/) | [#2 evidence field set](https://github.com/raknor-ai/agent-governance-standard/issues/2) | Independent rerun of the contributed `commitment_anchor` vectors |
+
+## Value as received
+
+Every indeterminate denial in `fail-closed/` must emit an event carrying `event_detail`: which input was indeterminate (`verdict`, `allowlist` or `policy`), the value exactly as received (unnormalised), and its form (`missing`, `null`, `empty`, `text` or `non_text`). An implementation can refuse correctly and still log every case as the same deny, and then an assessor can't tell a verdict in another vocabulary from no verdict at all. The `normalised-deny-log` variant in `run.py` models that failure. The value-as-received requirement comes from aigentical-ai, [agentbaseline#49](https://github.com/agentbaseline/agentbaseline/issues/49).
 
 ## Vector format
 

@@ -28,23 +28,40 @@ def recognised_entries(allow):
     # exact action ids (namespace:name) or the single wildcard "*"; other match-all spellings are unrecognised
     return all(e == "*" or ":" in e for e in allow)
 
+def received_form(value, missing=False):
+    if missing:
+        return "missing"
+    if value is None:
+        return "null"
+    if value == "" or value == []:
+        return "empty"
+    if isinstance(value, str):
+        return "text"
+    return "non_text"
+
+def indeterminate(inp, value, missing=False):
+    # the event carries the indeterminate input exactly as received (unnormalised) and its form
+    # (value-as-received requirement from aigentical-ai, agentbaseline#49)
+    return False, "policy_indeterminate", {"input": inp, "received_value": None if missing else value,
+                                           "received_form": received_form(value, missing)}
+
 def fc_conforming(policy, action, verdict):
+    if policy.get("load_error") or policy.get("signature_valid") is False:
+        return indeterminate("policy", policy)
+    allow = policy.get("allowlist")
+    if not allow or not recognised_entries(allow):
+        return indeterminate("allowlist", allow)
+    if "*" not in allow and action not in allow:
+        return False, None, None
     try:
-        if policy.get("load_error") or policy.get("signature_valid") is False:
-            return False, "policy_indeterminate"
-        allow = policy.get("allowlist")
-        if not allow or not recognised_entries(allow):
-            return False, "policy_indeterminate"
-        if "*" not in allow and action not in allow:
-            return False, None
         v = evaluate_verdict(verdict, policy)
-        if v == ALLOW:
-            return True, None
-        if v == DENY:
-            return False, None
-        return False, "policy_indeterminate"
     except Exception:
-        return False, "policy_indeterminate"
+        return indeterminate("verdict", None, missing=True)
+    if v == ALLOW:
+        return True, None, None
+    if v == DENY:
+        return False, None, None
+    return indeterminate("verdict", v)
 
 def fc_empty_means_all(policy, action, verdict):  # crewAI #7778 / legacy agent-airlock shape
     try:
@@ -77,7 +94,7 @@ def fc_exception_allows(policy, action, verdict):  # evaluator error swallowed, 
     return (v == ALLOW, None) if v in (ALLOW, DENY) else (False, "policy_indeterminate")
 
 def fc_silent_deny(policy, action, verdict):  # denies correctly, never reports
-    return fc_conforming(policy, action, verdict)[0], None
+    return fc_conforming(policy, action, verdict)[0], None, None
 
 def fc_alt_wildcard(policy, action, verdict):  # "all"/"any" accepted as match-all
     policy = dict(policy)
@@ -85,13 +102,27 @@ def fc_alt_wildcard(policy, action, verdict):  # "all"/"any" accepted as match-a
         policy["allowlist"] = ["*" if e in ("all", "any", ".*") else e for e in policy["allowlist"]]
     return fc_conforming(policy, action, verdict)
 
+def fc_normalised_deny_log(policy, action, verdict):  # refuses correctly, logs every indeterminate case as a plain DENY
+    executed, event, detail = fc_conforming(policy, action, verdict)
+    if detail is not None:
+        detail = {"input": detail["input"], "received_value": "DENY", "received_form": "text"}
+    return executed, event, detail
+
+def fc_passes(f, v):
+    r = f(v["policy"], v["action"], v["verdict"])
+    if (r[0], r[1]) != (v["expect"]["executed"], v["expect"]["event"]):
+        return False
+    if len(r) == 3 and "event_detail" in v["expect"]:
+        return r[2] == v["expect"]["event_detail"]
+    return True
+
 def run_fail_closed():
     vs = json.load(open(os.path.join(HERE, "fail-closed", "vectors.json")))["vectors"]
     impls = {"conforming": fc_conforming, "empty-means-all": fc_empty_means_all,
              "execute-unless-DENY": fc_execute_unless_deny, "exception-allows": fc_exception_allows,
-             "silent-deny": fc_silent_deny, "alt-wildcard-spelling": fc_alt_wildcard}
-    return report("#3 fail-closed", vs, impls,
-                  lambda f, v: dict(zip(("executed", "event"), f(v["policy"], v["action"], v["verdict"]))) == v["expect"])
+             "silent-deny": fc_silent_deny, "alt-wildcard-spelling": fc_alt_wildcard,
+             "normalised-deny-log": fc_normalised_deny_log}
+    return report("#3 fail-closed", vs, impls, fc_passes)
 
 # ---------- #4 resource governance ----------
 
