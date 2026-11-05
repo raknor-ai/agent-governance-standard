@@ -73,6 +73,9 @@ On October 25 we [offered maintainers any submission route](https://github.com/a
 
 These reviews establish handling priorities, not acceptance of proposed SHALL clauses or new controls. All external proposals were acknowledged on October 18. The [Equilateral evidence-field proposal #4](https://github.com/Equilateral-AI/agent-governance-scorecard/issues/4) is a related proposal with a separate disposition process. [Equilateral progress](https://github.com/Equilateral-AI/agent-governance-scorecard/blob/main/PROGRESS.md).
 
+- **2026-11-05:** AUT-05 approval-binding cases (3) and (4) from agentbaseline#28, by aigentical-ai under CC0 with consent, added at [`conformance/v1.1-draft/aut-05-binding/`](https://github.com/raknor-ai/agent-governance-standard/tree/2d66f9c238fbb115785874e0792700ced7963284/conformance/v1.1-draft/aut-05-binding) (`2d66f9c`). owenshuo's labels are quoted verbatim, and owenshuo was [asked to confirm the transcription](https://github.com/agentbaseline/agentbaseline/issues/28#issuecomment-6648424399).
+- **2026-11-05:** fail-closed vectors (#3) now require the value as received and its form on every indeterminate denial. aigentical-ai raised the requirement on agentbaseline#49. There are 19 vectors, and the `normalised-deny-log` variant fails as it should (`cd10690`). We [supported the AUT-06 test method on agentbaseline#49](https://github.com/agentbaseline/agentbaseline/issues/49#issuecomment-6648424083).
+
 ## Next deliverables
 
 1. Draft the field set and control crosswalk against the two concrete record shapes, with separate integrity, claim-verifiability, coverage, observation and timing properties.
