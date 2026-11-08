@@ -1,5 +1,7 @@
 # Raknor Agent Governance Standard
 
+Operationalized agent-governance criteria with adversarial testing scenarios: 26 controls across 5 domains (Authority Governance, Observability, Interoperability, Safety & Reliability, Adversarial Resilience). Compliance is assessed through adversarial testing against live systems and verified through cryptographic evidence. ([Canonical definition](https://equilateral.ai/definitions/raknor-agent-governance-standard/))
+
 Canonical mirror of the **Raknor Agent Governance Standard v1.0**, published March 2026.
 
 **Canonical URL**: [raknor.ai/standard.html](https://raknor.ai/standard.html)
