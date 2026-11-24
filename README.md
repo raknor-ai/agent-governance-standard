@@ -12,7 +12,7 @@ Canonical mirror of the **Raknor Agent Governance Standard v1.0**, published Mar
 
 **The v1.1 public comment period is open.** The proposal window opened on **2026-09-23**; the **proposed closing date is 2026-11-30**.
 
-Section 14 of the standard commits to publishing proposed changes for comment before adoption. This is a proposal window against the published [v1.0 standard](STANDARD.md), not a review of an existing v1.1 draft. Accepted proposals will be incorporated into a draft for final review after the window closes.
+Section 13 of the standard commits to publishing proposed changes for comment before adoption. This is a proposal window against the published [v1.0 standard](STANDARD.md), not a review of an existing v1.1 draft. Accepted proposals will be incorporated into a draft for final review after the window closes.
 
 To participate, [open an issue using the v1.1 Proposal template](https://github.com/raknor-ai/agent-governance-standard/issues/new?template=v11-proposal.yml). Identify the affected section and control, quote the current text, and provide your proposed change, rationale, and supporting evidence.
 
